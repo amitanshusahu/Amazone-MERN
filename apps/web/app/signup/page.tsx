@@ -23,7 +23,8 @@ export default function Login() {
 		setInput({ ...input, [e.target.name]: e.target.value })
 	}
 
-	const handelSelect = (value: string): void => {
+	const handelSelect = (value): void => {
+		console.log(`Selected: ${value}`);
 		setSelect(value);
 	}
 
@@ -36,7 +37,7 @@ export default function Login() {
 	}
 
 	const handelValidation = (): boolean => {
-		
+
 		return true;
 	}
 
