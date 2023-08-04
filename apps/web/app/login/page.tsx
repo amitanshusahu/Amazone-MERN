@@ -2,25 +2,101 @@
 
 import styled from 'styled-components'
 import Image from 'next/image';
-import { Input, ConfigProvider, Typography, Button } from 'antd'
-const  { Link } = Typography;
-import { UserOutlined, MailOutlined} from '@ant-design/icons';
+import { Input, ConfigProvider, Typography, Button, message } from 'antd'
+const { Link } = Typography;
+import { UserOutlined, MailOutlined } from '@ant-design/icons';
 import theme from 'ui/AntdTheme';
-import logo from '../webship.png';
+import logo from '../public/logo.png';
+import { useEffect, useRef, useState } from 'react';
+import { loadSecrets, loginurl, TOKEN, } from 'config'
+import Fetch from 'fetch';
+import { LoginParams } from 'types';
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
+
+	const router = useRouter();
+	const [input, setInput] = useState({
+		username: '',
+		email: '',
+		password: '',
+	});
+	const [messageApi, contextHolder] = message.useMessage();
+
+	useEffect(() => {
+		loadSecrets();
+		if (TOKEN) {
+			router.push('/')
+		}
+	})
+
+	const error = (content: string) => {
+    messageApi.open({
+      type: 'error',
+      content: content,
+    });
+  };
+
+	const handelInputChange = (e: { target: { name: string, value: string } }): void => {
+		setInput({ ...input, [e.target.name]: e.target.value })
+	}
+
+	const handelSubmit = async (): Promise<void> => {
+		const { username, password } = input;
+		const payload: LoginParams = {
+			username,
+			password,
+		};
+		const api = new Fetch(payload, loginurl);
+
+		const res = await api.postJson();
+		if (res.status) {
+			localStorage.setItem('TOKEN', res.token);
+			router.push('./');
+		}
+		else error(res.msg);
+
+	}
+
 	return (
 		<ConfigProvider theme={theme}>
+			{contextHolder}
 			<StyledDiv>
-			<div className="form-wrapper">
-				<Image src={logo} alt='logo'/>
-				<Input placeholder='Username' prefix={<UserOutlined />} required={true} />
-				<Input type='email' placeholder='Email' prefix={<MailOutlined />} required={true}/>
-				<Input.Password placeholder='Password' required={true}/>
-				<Button type='primary' block size='large' > Login to Amazone </Button>
-				<Link href='/signup'> Already have an account? </Link>
-			</div>
-		</StyledDiv>
+				<div className="form-wrapper">
+					<Image src={logo} alt='logo' />
+					<Input
+						placeholder='Username'
+						name='username'
+						prefix={<UserOutlined />}
+						required={true}
+						onChange={handelInputChange}
+						allowClear
+					/>
+					<Input
+						type='email'
+						placeholder='Email'
+						name='email'
+						prefix={<MailOutlined />}
+						required={true}
+						onChange={handelInputChange}
+						allowClear
+					/>
+					<Input.Password
+						placeholder='Password'
+						name='password'
+						required={true}
+						onChange={handelInputChange}
+					/>
+					<Button
+						type='primary'
+						block size='large'
+						onClick={handelSubmit}
+					>
+						Login to webship
+					</Button>
+					<Link href='/signup'> Don't have an account? </Link>
+				</div>
+			</StyledDiv>
 		</ConfigProvider>
 	)
 }
@@ -31,7 +107,7 @@ const StyledDiv = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.dev/svgjs' width='1440' height='560' preserveAspectRatio='none' viewBox='0 0 1440 560'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1267%26quot%3b)' fill='none'%3e%3crect width='1440' height='560' x='0' y='0' fill='url(%26quot%3b%23SvgjsLinearGradient1268%26quot%3b)'%3e%3c/rect%3e%3cpath d='M1130.35%2c393.808C1152.698%2c395.417%2c1175.684%2c387.289%2c1187.67%2c368.359C1200.444%2c348.185%2c1201.062%2c322.007%2c1188.775%2c301.533C1176.809%2c281.594%2c1153.587%2c271.946%2c1130.35%2c272.843C1108.649%2c273.681%2c1089.052%2c286.383%2c1079.248%2c305.761C1070.274%2c323.498%2c1075.762%2c343.828%2c1085.74%2c361.02C1095.669%2c378.127%2c1110.622%2c392.388%2c1130.35%2c393.808' fill='rgba(49%2c 148%2c 255%2c 0.48)' class='triangle-float2'%3e%3c/path%3e%3cpath d='M898.983%2c318.608C957.168%2c320.733%2c1013.384%2c291.906%2c1042.575%2c241.528C1071.84%2c191.022%2c1069.093%2c127.779%2c1038.284%2c78.2C1009.075%2c31.195%2c954.23%2c7.222%2c898.983%2c10.452C848.878%2c13.381%2c810.214%2c49.419%2c785.298%2c92.989C760.598%2c136.18%2c750.089%2c187.23%2c772.478%2c231.663C797.156%2c280.638%2c844.179%2c316.606%2c898.983%2c318.608' fill='rgba(49%2c 148%2c 255%2c 0.48)' class='triangle-float2'%3e%3c/path%3e%3cpath d='M1253.796978614254 51.16831447734311L1181.4141150629798-11.753148852940974 1118.4926517326958 60.62971469833305 1190.87551528397 123.55117802861713z' fill='rgba(49%2c 148%2c 255%2c 0.48)' class='triangle-float2'%3e%3c/path%3e%3cpath d='M337.22 372.43 a118.32 118.32 0 1 0 236.64 0 a118.32 118.32 0 1 0 -236.64 0z' fill='rgba(49%2c 148%2c 255%2c 0.48)' class='triangle-float3'%3e%3c/path%3e%3cpath d='M468.3%2c636.451C504.618%2c637.879%2c539.796%2c617.526%2c556.086%2c585.035C571.075%2c555.138%2c556.692%2c521.933%2c540.344%2c492.757C523.469%2c462.641%2c502.817%2c428.87%2c468.3%2c428.367C433.272%2c427.857%2c408.442%2c459.396%2c392.528%2c490.605C378.251%2c518.604%2c377.217%2c550.683%2c391.707%2c578.573C407.519%2c609.009%2c434.028%2c635.104%2c468.3%2c636.451' fill='rgba(49%2c 148%2c 255%2c 0.48)' class='triangle-float1'%3e%3c/path%3e%3cpath d='M379.4546684566066 389.76169327209107L405.71010795157383 276.03689053091307 291.98530521039584 249.7814510359458 265.72986571542856 363.5062537771238z' fill='rgba(49%2c 148%2c 255%2c 0.48)' class='triangle-float1'%3e%3c/path%3e%3cpath d='M789.652%2c548.765C830.13%2c549.02%2c865.908%2c523.676%2c885.413%2c488.206C904.213%2c454.019%2c902.121%2c413.032%2c882.992%2c379.028C863.455%2c344.299%2c829.499%2c318.023%2c789.652%2c317.979C749.738%2c317.935%2c715.3%2c343.91%2c695.95%2c378.82C677.211%2c412.628%2c677.294%2c453.163%2c695.957%2c487.013C715.314%2c522.12%2c749.563%2c548.513%2c789.652%2c548.765' fill='rgba(49%2c 148%2c 255%2c 0.48)' class='triangle-float1'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1267'%3e%3crect width='1440' height='560' fill='white'%3e%3c/rect%3e%3c/mask%3e%3clinearGradient x1='15.28%25' y1='-39.29%25' x2='84.72%25' y2='139.29%25' gradientUnits='userSpaceOnUse' id='SvgjsLinearGradient1268'%3e%3cstop stop-color='rgba(62%2c 157%2c 255%2c 1)' offset='0'%3e%3c/stop%3e%3cstop stop-color='rgba(171%2c 208%2c 255%2c 1)' offset='1'%3e%3c/stop%3e%3c/linearGradient%3e%3cstyle%3e %40keyframes float1 %7b 0%25%7btransform: translate(0%2c 0)%7d 50%25%7btransform: translate(-10px%2c 0)%7d 100%25%7btransform: translate(0%2c 0)%7d %7d .triangle-float1 %7b animation: float1 5s infinite%3b %7d %40keyframes float2 %7b 0%25%7btransform: translate(0%2c 0)%7d 50%25%7btransform: translate(-5px%2c -5px)%7d 100%25%7btransform: translate(0%2c 0)%7d %7d .triangle-float2 %7b animation: float2 4s infinite%3b %7d %40keyframes float3 %7b 0%25%7btransform: translate(0%2c 0)%7d 50%25%7btransform: translate(0%2c -10px)%7d 100%25%7btransform: translate(0%2c 0)%7d %7d .triangle-float3 %7b animation: float3 6s infinite%3b %7d %3c/style%3e%3c/defs%3e%3c/svg%3e");
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.dev/svgjs' width='1440' height='560' preserveAspectRatio='none' viewBox='0 0 1440 560'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1193%26quot%3b)' fill='none'%3e%3crect width='1440' height='560' x='0' y='0' fill='url(%26quot%3b%23SvgjsLinearGradient1194%26quot%3b)'%3e%3c/rect%3e%3cpath d='M854.496%2c199.651C899.605%2c199.346%2c945.528%2c180.594%2c965.991%2c140.392C985.109%2c102.833%2c967.095%2c59.565%2c943.613%2c24.568C923.238%2c-5.798%2c891.061%2c-25.314%2c854.496%2c-25.78C817.061%2c-26.257%2c782.422%2c-8.704%2c761.357%2c22.246C736.933%2c58.131%2c720.179%2c103.484%2c740.357%2c141.917C761.599%2c182.377%2c808.8%2c199.96%2c854.496%2c199.651' fill='rgba(49%2c 148%2c 255%2c 0.48)' class='triangle-float1'%3e%3c/path%3e%3cpath d='M1480.851%2c336.996C1528.779%2c340.967%2c1579.977%2c325.208%2c1604.53%2c283.856C1629.488%2c241.823%2c1619.559%2c188.765%2c1593.376%2c147.484C1569.096%2c109.205%2c1526.12%2c86.517%2c1480.851%2c88.863C1439.183%2c91.023%2c1406.206%2c121.217%2c1386.865%2c158.187C1369.02%2c192.298%2c1370.305%2c231.857%2c1388.216%2c265.933C1407.623%2c302.855%2c1439.281%2c333.552%2c1480.851%2c336.996' fill='rgba(49%2c 148%2c 255%2c 0.48)' class='triangle-float3'%3e%3c/path%3e%3cpath d='M1231.87 219.54 a164.99 164.99 0 1 0 329.98 0 a164.99 164.99 0 1 0 -329.98 0z' fill='rgba(49%2c 148%2c 255%2c 0.48)' class='triangle-float1'%3e%3c/path%3e%3cpath d='M599.469%2c695.899C641.12%2c695.777%2c669.607%2c656.962%2c687.331%2c619.27C702.283%2c587.473%2c697.435%2c552.486%2c681.674%2c521.082C663.637%2c485.143%2c639.663%2c445.385%2c599.469%2c444.202C558.068%2c442.983%2c527.114%2c479.016%2c508.429%2c515.981C491.694%2c549.087%2c493.965%2c586.687%2c510.713%2c619.786C529.573%2c657.058%2c557.697%2c696.021%2c599.469%2c695.899' fill='rgba(49%2c 148%2c 255%2c 0.48)' class='triangle-float3'%3e%3c/path%3e%3cpath d='M1060.83 337.54 a94.8 94.8 0 1 0 189.6 0 a94.8 94.8 0 1 0 -189.6 0z' fill='rgba(49%2c 148%2c 255%2c 0.48)' class='triangle-float2'%3e%3c/path%3e%3cpath d='M415.71648910626647 106.90169358534213L379.42062049389097 233.48043003589243 505.9993569444413 269.776298648268 542.2952255568168 143.19756219771764z' fill='rgba(49%2c 148%2c 255%2c 0.48)' class='triangle-float1'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1193'%3e%3crect width='1440' height='560' fill='white'%3e%3c/rect%3e%3c/mask%3e%3clinearGradient x1='15.28%25' y1='-39.29%25' x2='84.72%25' y2='139.29%25' gradientUnits='userSpaceOnUse' id='SvgjsLinearGradient1194'%3e%3cstop stop-color='rgba(62%2c 157%2c 255%2c 1)' offset='0'%3e%3c/stop%3e%3cstop stop-color='rgba(171%2c 208%2c 255%2c 1)' offset='1'%3e%3c/stop%3e%3c/linearGradient%3e%3cstyle%3e %40keyframes float1 %7b 0%25%7btransform: translate(0%2c 0)%7d 50%25%7btransform: translate(-10px%2c 0)%7d 100%25%7btransform: translate(0%2c 0)%7d %7d .triangle-float1 %7b animation: float1 5s infinite%3b %7d %40keyframes float2 %7b 0%25%7btransform: translate(0%2c 0)%7d 50%25%7btransform: translate(-5px%2c -5px)%7d 100%25%7btransform: translate(0%2c 0)%7d %7d .triangle-float2 %7b animation: float2 4s infinite%3b %7d %40keyframes float3 %7b 0%25%7btransform: translate(0%2c 0)%7d 50%25%7btransform: translate(0%2c -10px)%7d 100%25%7btransform: translate(0%2c 0)%7d %7d .triangle-float3 %7b animation: float3 6s infinite%3b %7d %3c/style%3e%3c/defs%3e%3c/svg%3e");
 	background-size: cover;
 
 	.form-wrapper{
@@ -44,7 +120,7 @@ const StyledDiv = styled.div`
 		border-radius: 10px;
 		background-color: white;
 
-		input{
+		input {
 			font-size: 13px !important;
 			font-weight: bold !important;
 			padding: 10px !important;

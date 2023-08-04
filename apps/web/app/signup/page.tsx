@@ -2,15 +2,20 @@
 
 import styled from 'styled-components'
 import Image from 'next/image';
-import { Input, ConfigProvider, Typography, Button, Select } from 'antd'
+import { Input, ConfigProvider, Typography, Button, Select, message } from 'antd'
 const { Link } = Typography;
 import { UserOutlined, MailOutlined } from '@ant-design/icons';
 import theme from 'ui/AntdTheme';
-import logo from '../webship.png';
-import { useRef, useState } from 'react';
+import logo from '../public/logo.png';
+import { useEffect, useRef, useState } from 'react';
+import { loadSecrets, TOKEN, signupurl } from 'config'
+import Fetch from 'fetch';
+import { SignupParams } from 'types';
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
 
+	const router = useRouter();
 	const [input, setInput] = useState({
 		username: '',
 		email: '',
@@ -18,6 +23,21 @@ export default function Login() {
 	});
 	const [select, setSelect] = useState<string>('buyer');
 	const [confirm, setConfirm] = useState<string>();
+	const [messageApi, contextHolder] = message.useMessage();
+
+	useEffect(() => {
+		loadSecrets();
+		if (TOKEN) {
+			router.push('/')
+		}
+	})
+
+	const error = (content: string) => {
+    messageApi.open({
+      type: 'error',
+      content: content,
+    });
+  };
 
 	const handelInputChange = (e: { target: { name: string, value: string } }): void => {
 		setInput({ ...input, [e.target.name]: e.target.value })
@@ -32,17 +52,41 @@ export default function Login() {
 		setConfirm(e.target.value);
 	}
 
-	const handelSubmit = ():void => {
-		console.log(input, confirm, select);
+	const handelSubmit = async (): Promise<void> => {
+		const isOk = handelValidation();
+
+		if (isOk && !TOKEN) {
+			const { username, password } = input;
+			const payload: SignupParams = {
+				username,
+				password,
+				type: select
+			};
+			const api = new Fetch(payload, signupurl);
+
+			const res = await api.postJson();
+			if (res.status) {
+				localStorage.setItem('TOKEN', res.token);
+				router.push('./');
+			}
+			else error(res.msg);
+		}
+
 	}
 
 	const handelValidation = (): boolean => {
+
+		if (input.password != confirm) {
+			error('password is not same as confirm password');
+			return false
+		}
 
 		return true;
 	}
 
 	return (
 		<ConfigProvider theme={theme}>
+			{contextHolder}
 			<StyledDiv>
 				<div className="form-wrapper">
 					<Image src={logo} alt='logo' />
@@ -52,6 +96,7 @@ export default function Login() {
 						prefix={<UserOutlined />}
 						required={true}
 						onChange={handelInputChange}
+						allowClear
 					/>
 					<Input
 						type='email'
@@ -60,6 +105,7 @@ export default function Login() {
 						prefix={<MailOutlined />}
 						required={true}
 						onChange={handelInputChange}
+						allowClear
 					/>
 					<Select
 						placeholder='Select Account Type'
@@ -96,7 +142,7 @@ export default function Login() {
 					>
 						Create Account
 					</Button>
-					<Link href='/login'> Don't have an account? </Link>
+					<Link href='/login'> Already have an account? </Link>
 				</div>
 			</StyledDiv>
 		</ConfigProvider>

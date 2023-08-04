@@ -9,16 +9,5 @@
 
     // for cleaning the messy file expoler
     "**/node_modules": true,
-    "**/.next": true,
-    "**/*.js": true,
-    "**/*.config.js": true,
-    "**/*.d.ts": true,
-    "**/.*": true,
-    "**/*.md": true,
-    "**/*.json": true,
-
-    // exclude 
-    "**/.vscode": false,
-    "**/.vscode/settings.json": false,
   }
 }

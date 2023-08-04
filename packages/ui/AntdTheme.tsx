@@ -1,4 +1,3 @@
-// theme/themeConfig.ts
 import type { ThemeConfig} from 'antd';
 
 const themeantd: ThemeConfig = {

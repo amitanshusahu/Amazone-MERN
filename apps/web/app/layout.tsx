@@ -1,6 +1,6 @@
 import StyledComponentsRegistryAntd from './lib/AntdRegistry';
 import StyledComponentsRegistry from './lib/registry'
-import './global.css';
+import './public/global.css';
 
 export default function RootLayout({
   children,

@@ -1,0 +1,53 @@
+### Signup
+
+POST http://localhost:9000/api/auth/signup 
+Content-Type: application/json
+
+{
+  "username" : "amith1", 
+  "password" : "12345678",
+  "type" : "seller"
+}
+
+### Login
+
+POST http://localhost:9000/api/auth/login 
+Content-Type: application/json
+
+{
+  "username" : "amith", 
+  "password" : "12345678"
+}
+
+### me
+
+GET http://localhost:9000/api/auth/me
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXRoMSIsImlhdCI6MTY5MTA0Nzk5OX0.kE6xPkynjIyawJgXvox4hEF8Q3pJM9_wunJaWDDsLgA
+
+### create procuct
+
+POST http://localhost:9000/api/app/createproduct
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXRoMSIsImlhdCI6MTY5MTA0Nzk5OX0.kE6xPkynjIyawJgXvox4hEF8Q3pJM9_wunJaWDDsLgA
+
+{
+  "username" : "amith1",
+  "title" : "Title of product",
+  "description" : "this is a very nice produce",
+  "price" : 200,
+  "options" : ["Emi Availble", "Returnable"],
+  "instock" : 10,
+  "info" : "This is a really long description of the product",
+  "img1": "some img string",
+  "img2": "some img string",
+  "img3": "some img string",
+  "img4": "some img string"
+}
+
+### Get products
+
+GET http://localhost:9000/api/app/getproducts
+
+### Get product
+
+GET http://localhost:9000/api/app/getproduct/64cb56ce229fa31b42518fc7
