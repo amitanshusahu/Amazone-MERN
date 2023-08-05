@@ -1,42 +1,84 @@
 'use client'
 
 import styled from 'styled-components';
-import { Typography, Space, Button, Image, List, Avatar } from 'antd';
+import { Typography, Space, Button, Image, List, Avatar, message } from 'antd';
 const { Title, Text } = Typography;
 import { StarTwoTone, StarFilled, RightOutlined, ThunderboltFilled, ShoppingCartOutlined, MoneyCollectFilled, HomeFilled, MoneyCollectOutlined } from '@ant-design/icons';
 import Paragraph from 'antd/es/typography/Paragraph';
+import { useEffect, useState } from 'react';
+import Fetch from 'fetch';
+import { getproducturl, meurl } from 'config';
 
 const imgFallback: string = 'https://i.pinimg.com/1200x/7a/4b/a3/7a4ba30875e0de9567889866eb66bc4c.jpg';
 
 export default function Product({ params }) {
+
+  const [product, setProduct] = useState<any>();
+  const [messageApi, contextHolder] = message.useMessage();
+  const [username, setUsername] = useState();
+
+  const error = (content: string) => {
+    messageApi.open({
+      type: 'error',
+      content: content,
+    });
+  };
+
+  useEffect(() => {
+    async function getProduct() {
+      const api = new Fetch({}, `${getproducturl}${params.id}`);
+      const res = await api.get();
+      if ('status' in res) {
+        if (res.status) {
+          if ('product' in res) setProduct(res.product);
+        }
+        else {
+          if ('msg' in res) error(res.msg);
+        }
+      }
+    }
+    async function getUsername() {
+      const api = new Fetch({}, meurl);
+      const res = await api.get();
+      if('status' in res){
+        if (res.status){
+          setUsername(res.username);
+        }
+        else error(res.msg);
+      }
+    }
+    getProduct();
+    // getUsername();
+  }, [])
+
   return (
     <StyledDiv>
       <div className="product-wrapper">
 
         <div className="product-img-wrapper">
           <div className="big-img-wrapper">
-            <Image src="https://i.pinimg.com/1200x/5e/de/d1/5eded1fd24560c2b05764041a7aca767.jpg" />
+            <Image src={product ? product.img1 : ""} />
           </div>
           <div className="small-img-container">
             <div className="img-wrapper">
-              <img src="https://i.pinimg.com/1200x/5e/de/d1/5eded1fd24560c2b05764041a7aca767.jpg" />
+              <img src={product ? product.img1 : ""} />
             </div>
             <div className="img-wrapper">
-              <img src="https://i.pinimg.com/1200x/5e/de/d1/5eded1fd24560c2b05764041a7aca767.jpg" />
+              <img src={product ? product.img2 : ""} />
             </div>
             <div className="img-wrapper">
-              <img src="https://i.pinimg.com/1200x/5e/de/d1/5eded1fd24560c2b05764041a7aca767.jpg" />
+              <img src={product ? product.img3 : ""} />
             </div>
             <div className="img-wrapper">
-              <img src="https://i.pinimg.com/1200x/5e/de/d1/5eded1fd24560c2b05764041a7aca767.jpg" />
+              <img src={product ? product.img4 : ""} />
             </div>
           </div>
         </div>
 
         <div className="product-desc-wrapper">
           <div className="title">
-            <Title>Plush toys for babies</Title>
-            <Text>ideal age 1 to 2 years, helps develop social and emotional growth, soft toys</Text>
+            <Title>{product ? product.title : ""}</Title>
+            <Text>{product ? product.description : ""}</Text>
           </div>
 
           <div className="star-review">
@@ -55,7 +97,7 @@ export default function Product({ params }) {
           </div>
 
           <div className="price">
-            <Title> <span style={{ color: '#cccc' }}>$</span> 25.60</Title>
+            <Title> <span style={{ color: '#cccc' }}>$ </span> {product ? product.price : ""}</Title>
           </div>
 
           <div className="action-btns">
@@ -66,8 +108,17 @@ export default function Product({ params }) {
           <div className="offers" style={{ marginTop: '20px' }}>
             <Title level={4}>Delivery Option</Title>
             <p><Text strong> <StarFilled style={{ color: '#aaa' }} /> 100%</Text> <Text>Original Product</Text></p>
-            <p><Text strong> <MoneyCollectOutlined style={{ color: '#aaa' }} /> Pay On Delivery</Text> <Text> is available</Text></p>
-            <p><Text strong> <HomeFilled style={{ color: '#aaa' }} /> 30 days</Text> <Text> return</Text></p>
+            
+            <p><Text strong> <HomeFilled style={{ color: '#aaa' }} /> webship prime</Text> <Text> product</Text></p>
+            {
+              product
+              ? product.options.map( option => {
+                return (
+                  <p><Text strong> <MoneyCollectOutlined style={{ color: '#aaa' }} /> {option}</Text></p>
+                )
+              })
+              : ""
+            }
           </div>
 
           <div className="desc" style={{ marginTop: '15px' }}>
@@ -78,8 +129,7 @@ export default function Product({ params }) {
                 expandable: true,
                 symbol: 'Read more'
               }}>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facilis architecto dicta distinctio placeat voluptates aspernatur eum officia eaque. Similique, suscipit numquam? Delectus cum inventore quas voluptatem! Placeat dolor quisquam voluptates?
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos nam voluptas labore reiciendis itaque fugiat nemo enim eveniet atque unde, cum rerum libero facere quidem porro repellendus nisi doloremque nobis!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos nam voluptas labore reiciendis itaque fugiat nemo enim eveniet atque unde, cum rerum libero facere quidem porro repellendus nisi doloremque nobis!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos nam voluptas labore reiciendis itaque fugiat nemo enim eveniet atque unde, cum rerum libero facere quidem porro repellendus nisi doloremque nobis!
+              {product ? product.info : ""}
             </Paragraph>
           </div>
 

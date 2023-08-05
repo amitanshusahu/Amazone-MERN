@@ -5,4 +5,5 @@ export declare const createproducturl: string;
 export declare const getproductsurl: string;
 export declare const getproducturl: string;
 export declare let TOKEN: string;
+export declare let USERNAME: string;
 export declare function loadSecrets(): null | undefined;

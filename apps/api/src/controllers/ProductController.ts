@@ -6,7 +6,6 @@ import { createProductInput } from 'types'
 export async function createProduct(req: Request, res: Response): Promise<Response> {
 
   try {
-    console.log(req.body);
     // input validation
     const parsedInput = createProductInput.safeParse(req.body);
     if (!parsedInput.success) {
@@ -17,9 +16,8 @@ export async function createProduct(req: Request, res: Response): Promise<Respon
     }
 
     // Check if its a seller
-    const { username, title, description, price, instock, options, info, img1, img2, img3, img4 } = req.body;
+    const { username, title, description, price, options, info, img1, img2, img3, img4 } = req.body;
     const user = await userModel.findOne({username});
-    console.log(user);
     if (user?.type != 'seller') {
       return res.status(403).json({status: false, msg: 'Not A Seller'});
     }
@@ -31,7 +29,6 @@ export async function createProduct(req: Request, res: Response): Promise<Respon
       description,
       price,
       options,
-      instock,
       info,
       img1,
       img2,

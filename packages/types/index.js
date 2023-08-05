@@ -16,7 +16,6 @@ exports.createProductInput = zod_1.z.object({
     title: zod_1.z.string(),
     description: zod_1.z.string(),
     price: zod_1.z.number(),
-    instock: zod_1.z.number(),
     options: zod_1.z.array(zod_1.z.string()),
     info: zod_1.z.string(),
     img1: zod_1.z.string(),

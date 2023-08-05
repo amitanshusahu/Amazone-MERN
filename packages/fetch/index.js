@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const config_1 = require("config");
 class Fetch {
     constructor(payload, url) {
         this.payload = payload;
@@ -30,12 +29,11 @@ class Fetch {
     }
     postAuthjson() {
         return __awaiter(this, void 0, void 0, function* () {
-            (0, config_1.loadSecrets)();
             const res = yield fetch(this.url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `${config_1.TOKEN}`
+                    'Authorization': `${localStorage.getItem('TOKEN')}`
                 },
                 body: JSON.stringify(this.payload)
             });
@@ -45,11 +43,10 @@ class Fetch {
     }
     get() {
         return __awaiter(this, void 0, void 0, function* () {
-            (0, config_1.loadSecrets)();
             const res = yield fetch(this.url, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `${config_1.TOKEN}`
+                    'Authorization': `${localStorage.getItem('TOKEN')}`
                 },
             });
             const jsonRes = yield res.json();

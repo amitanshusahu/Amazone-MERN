@@ -19,7 +19,6 @@ const types_1 = require("types");
 function createProduct(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.log(req.body);
             // input validation
             const parsedInput = types_1.createProductInput.safeParse(req.body);
             if (!parsedInput.success) {
@@ -29,9 +28,8 @@ function createProduct(req, res) {
                 });
             }
             // Check if its a seller
-            const { username, title, description, price, instock, options, info, img1, img2, img3, img4 } = req.body;
+            const { username, title, description, price, options, info, img1, img2, img3, img4 } = req.body;
             const user = yield UserModel_1.default.findOne({ username });
-            console.log(user);
             if ((user === null || user === void 0 ? void 0 : user.type) != 'seller') {
                 return res.status(403).json({ status: false, msg: 'Not A Seller' });
             }
@@ -42,7 +40,6 @@ function createProduct(req, res) {
                 description,
                 price,
                 options,
-                instock,
                 info,
                 img1,
                 img2,

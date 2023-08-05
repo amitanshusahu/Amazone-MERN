@@ -17,10 +17,6 @@ const productSchema = new mongoose.Schema({
     type: Number,
     require: true,
   },
-  instock: {
-    type: Number,
-    require: true,
-  },
   options: {
     type: [String],
     require: true,

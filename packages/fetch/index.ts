@@ -1,5 +1,3 @@
-import { loadSecrets, TOKEN } from 'config';
-
 export default class Fetch {
   payload: Object | FormData;
   url: string;
@@ -23,12 +21,11 @@ export default class Fetch {
   }
 
   async postAuthjson() : Promise<any>{
-    loadSecrets();
     const res = await fetch(this.url, {
       method: 'POST',
       headers: {
         'Content-Type' : 'application/json',
-        'Authorization': `${TOKEN}`
+        'Authorization': `${localStorage.getItem('TOKEN')}`
       },
       body: JSON.stringify(this.payload)
     });
@@ -38,11 +35,10 @@ export default class Fetch {
   }
 
   async get() : Promise<any>{
-    loadSecrets();
     const res = await fetch(this.url, {
       method: 'GET',
       headers: {
-        'Authorization': `${TOKEN}`
+        'Authorization': `${localStorage.getItem('TOKEN')}`
       },
     });
     const jsonRes = await res.json();

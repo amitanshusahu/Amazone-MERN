@@ -7,8 +7,8 @@ const { Link } = Typography;
 import { UserOutlined, MailOutlined } from '@ant-design/icons';
 import theme from 'ui/AntdTheme';
 import logo from '../public/logo.png';
-import { useEffect, useRef, useState } from 'react';
-import { loadSecrets, TOKEN, signupurl } from 'config'
+import { useEffect, useState } from 'react';
+import { TOKEN, signupurl } from 'config'
 import Fetch from 'fetch';
 import { SignupParams } from 'types';
 import { useRouter } from 'next/navigation';
@@ -24,20 +24,19 @@ export default function Login() {
 	const [select, setSelect] = useState<string>('buyer');
 	const [confirm, setConfirm] = useState<string>();
 	const [messageApi, contextHolder] = message.useMessage();
+	
+	const error = (content: string) => {
+		messageApi.open({
+			type: 'error',
+			content: content,
+		});
+	};
 
 	useEffect(() => {
-		loadSecrets();
-		if (TOKEN) {
+		if (localStorage.getItem('TOKEN')) {
 			router.push('/')
 		}
-	})
-
-	const error = (content: string) => {
-    messageApi.open({
-      type: 'error',
-      content: content,
-    });
-  };
+	},[]);
 
 	const handelInputChange = (e: { target: { name: string, value: string } }): void => {
 		setInput({ ...input, [e.target.name]: e.target.value })

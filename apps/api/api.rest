@@ -36,7 +36,6 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXRoMSIs
   "description" : "this is a very nice produce",
   "price" : 200,
   "options" : ["Emi Availble", "Returnable"],
-  "instock" : 10,
   "info" : "This is a really long description of the product",
   "img1": "some img string",
   "img2": "some img string",
@@ -50,4 +49,4 @@ GET http://localhost:9000/api/app/getproducts
 
 ### Get product
 
-GET http://localhost:9000/api/app/getproduct/64cb56ce229fa31b42518fc7
+GET http://localhost:9000/api/app/getproduct/64cc7cfd8a5d0b12f56d3823

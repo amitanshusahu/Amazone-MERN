@@ -9,11 +9,17 @@ export const getproducturl: string = `${BASE_URI}/app/getproduct/`;
 
 
 export let TOKEN: string;
+export let USERNAME: string;
 
 export function loadSecrets() {
   const token = localStorage.getItem('TOKEN');
-  if (!token) {
+  const username = localStorage.getItem('USERNAME');
+  if (!token || !username) {
     return null
   }
+
   TOKEN = token;
+  USERNAME = username;
+
+  console.log('Exposing Secrets:', TOKEN, USERNAME);
 }

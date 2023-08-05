@@ -12,7 +12,7 @@ const app = (0, express_1.default)();
 (0, db_1.dbconnect)();
 // Middlewares
 app.use((0, cors_1.default)());
-app.use(express_1.default.json());
+app.use(express_1.default.json({ limit: '20mb' }));
 // Routes
 const UserRoutes_1 = __importDefault(require("./routes/UserRoutes"));
 const ProductRoutes_1 = __importDefault(require("./routes/ProductRoutes"));

@@ -8,10 +8,10 @@ import { UserOutlined, MailOutlined } from '@ant-design/icons';
 import theme from 'ui/AntdTheme';
 import logo from '../public/logo.png';
 import { useEffect, useRef, useState } from 'react';
-import { loadSecrets, loginurl, TOKEN, } from 'config'
 import Fetch from 'fetch';
 import { LoginParams } from 'types';
 import { useRouter } from 'next/navigation';
+import { loginurl } from 'config';
 
 export default function Login() {
 
@@ -24,11 +24,10 @@ export default function Login() {
 	const [messageApi, contextHolder] = message.useMessage();
 
 	useEffect(() => {
-		loadSecrets();
-		if (TOKEN) {
+		if (localStorage.getItem('TOKEN')) {
 			router.push('/')
 		}
-	})
+	},[]);
 
 	const error = (content: string) => {
     messageApi.open({

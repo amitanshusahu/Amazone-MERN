@@ -29,7 +29,6 @@ export declare const createProductInput: z.ZodObject<{
     title: z.ZodString;
     description: z.ZodString;
     price: z.ZodNumber;
-    instock: z.ZodNumber;
     options: z.ZodArray<z.ZodString, "many">;
     info: z.ZodString;
     img1: z.ZodString;
@@ -42,7 +41,6 @@ export declare const createProductInput: z.ZodObject<{
     title: string;
     description: string;
     price: number;
-    instock: number;
     info: string;
     img1: string;
     img2: string;
@@ -54,7 +52,6 @@ export declare const createProductInput: z.ZodObject<{
     title: string;
     description: string;
     price: number;
-    instock: number;
     info: string;
     img1: string;
     img2: string;

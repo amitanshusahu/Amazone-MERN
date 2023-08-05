@@ -20,7 +20,6 @@ export const createProductInput = z.object({
   title: z.string(),
   description: z.string(),
   price: z.number(),
-  instock: z.number(),
   options: z.array(z.string()),
   info: z.string(),
   img1: z.string(),
