@@ -66,7 +66,6 @@ function getProducts(req, res) {
                 const isseller = yield (0, utils_1.isSeller)(req.headers.user);
                 if (isseller) {
                     const products = yield ProductModel_1.default.find({ username: req.headers.user });
-                    console.log(products);
                     return res.status(200).json({ stauts: true, products });
                 }
                 else {
@@ -251,6 +250,7 @@ function buyfromcart(req, res) {
                 if (!isseller) {
                     for (let i = 0; i < pid.length; i++) {
                         yield OrderModel_1.default.create({ pid: pid[i], seller: seller[i], buyer: req.headers.user });
+                        yield CartModel_1.default.findOneAndDelete({ pid: pid[i], username: req.headers.user });
                     }
                     return res.status(200).json({ status: true });
                 }

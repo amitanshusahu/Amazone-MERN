@@ -1,7 +1,7 @@
 'use client'
 
 import styled from 'styled-components'
-import { Carousel, Typography, Image as Img, Space, message } from "antd";
+import { Carousel, Typography, Image as Img, Space, message, Skeleton } from "antd";
 const { Title, Text, Paragraph } = Typography;
 import { StarFilled, StarTwoTone } from "@ant-design/icons";
 import NavBar from 'ui/NavBar'
@@ -90,7 +90,7 @@ export default function BuyerOrders() {
                   )
                 })
                 : "No Orders"
-              : "loading..."
+              : <Skeleton active />
           }
         </div>
       </main>

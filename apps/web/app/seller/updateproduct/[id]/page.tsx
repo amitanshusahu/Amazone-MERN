@@ -1,7 +1,7 @@
 'use client'
 
 import styled from 'styled-components';
-import { Typography, Space, Button, Input, InputNumber, Checkbox, message } from 'antd';
+import { Typography, Space, Button, Input, InputNumber, Checkbox, message, Skeleton, Popconfirm } from 'antd';
 const { Title, Text } = Typography;
 import TextArea from 'antd/es/input/TextArea';
 import { ChangeEvent, useEffect, useState } from 'react';
@@ -210,7 +210,7 @@ export default function updateProduct({ params }) {
     const res = await api.postAuthjson();
     if ('status' in res) {
       if (res.status) {
-        alert('Product Registered');
+        alert('Product Updated');
         router.push('../../');
       }
       else {
@@ -323,11 +323,20 @@ export default function updateProduct({ params }) {
                   onChange={handelInputChange}
                 />
               </Space>
-              <Button size='large' type='primary' style={{ width: 300 }} onClick={handelSubmit}> Register Product </Button>
+              <Popconfirm
+                title="Delete the task"
+                description="Are you sure to delete this task?"
+                onConfirm={handelSubmit}
+                onCancel={() => error('Canceled Update')}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button size='large' danger style={{ width: 300 }}> Update Product </Button>
+              </Popconfirm>
             </div>
 
           </div>
-          : "loading..."
+          : <Skeleton active style={{ padding: 60 }} />
       }
     </StyledDiv >
   )

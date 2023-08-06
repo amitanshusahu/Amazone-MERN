@@ -1,7 +1,7 @@
 'use client'
 
 import styled from 'styled-components'
-import { Button, Skeleton, Space, Steps, Typography, message } from 'antd'
+import { Button, Result, Skeleton, Space, Steps, Typography, message } from 'antd'
 const { Title, Text } = Typography;
 import NavBar from 'ui/NavBar'
 import DelivryForm from 'ui/DelivryForm';
@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import Fetch from 'fetch';
 import { buyproducturl, getproducturl } from 'config';
 import { OrderParams } from 'types';
+import { useRouter } from 'next/navigation';
 
 export default function Buy({ params }) {
 
@@ -17,6 +18,7 @@ export default function Buy({ params }) {
   const [component, setComponent] = useState(<DelivryForm />);
   const [product, setProduct] = useState<any>();
   const [messageApi, contextHolder] = message.useMessage();
+  const router = useRouter();
 
   const error = (content: string) => {
     messageApi.open({
@@ -62,9 +64,17 @@ export default function Buy({ params }) {
       const api = new Fetch(payload, buyproducturl);
       const res = await api.postAuthjson();
       if (res.status) {
-        setComponent(<div>
-          Product Purchased.. shop more
-        </div>)
+        setComponent(<Result
+          status="success"
+          title={`Successfully Purchased`}
+          subTitle={`Product number ${params.id} seller by ${product.username} buyer you`}
+          extra={[
+            <Button type="primary" key="console" onClick={() => router.push('../')}>
+              Shop More
+            </Button>,
+            <Button key="buy">Buy Again</Button>,
+          ]}
+        />)
       }
       else setComponent(<div>
         {res.msg}
@@ -120,8 +130,9 @@ export default function Buy({ params }) {
               <Text style={{ fontSize: 17 }}>$ {product.price}</Text>
             </div>
             : <Space direction='vertical' size='large'>
-              <Skeleton.Avatar active size='large' shape='square'/>
+              <Skeleton.Avatar active size='large' shape='square' />
               <Skeleton.Input active size='large' />
+              <Skeleton active />
             </Space>
         }
       </main>

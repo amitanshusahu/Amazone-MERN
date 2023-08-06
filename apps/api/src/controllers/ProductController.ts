@@ -54,8 +54,7 @@ export async function getProducts(req: Request, res: Response): Promise<Response
     if (typeof req.headers.user == 'string') {
       const isseller = await isSeller(req.headers.user);
       if (isseller) {
-        const products = await productModel.find({username: req.headers.user});
-        console.log(products);
+        const products = await productModel.find({ username: req.headers.user });
         return res.status(200).json({ stauts: true, products });
       } else {
         const products = await productModel.find();
@@ -233,6 +232,7 @@ export async function buyfromcart(req: Request, res: Response): Promise<Response
       if (!isseller) {
         for (let i = 0; i < pid.length; i++) {
           await orderModel.create({ pid: pid[i], seller: seller[i], buyer: req.headers.user });
+          await cartModel.findOneAndDelete({ pid: pid[i], username: req.headers.user });
         }
         return res.status(200).json({ status: true });
       } else {

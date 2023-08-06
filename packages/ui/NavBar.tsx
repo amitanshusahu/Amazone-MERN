@@ -37,7 +37,7 @@ const selleritems: any = [
     type: 'divider',
   },
   {
-    label: 'Become a Buyer',
+    label: <a href="/seller/myproducts">Product Dashboard</a>,
     key: '3',
   },
 ];
@@ -76,7 +76,6 @@ export default function NavBar() {
       const api = new Fetch({}, issellerurl);
       const res = await api.get();
       if ("status" in res && typeof res.status == 'boolean') setSeller(res.status);
-      console.log(res);
     }
     getisSeller();
     getUsername();
@@ -144,5 +143,6 @@ const StyledDiv = styled.div`
 
   .logo img{
     width: 120px;
+    cursor: pointer;
   }
 `

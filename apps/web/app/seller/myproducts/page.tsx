@@ -12,7 +12,7 @@ import Fetch from "fetch";
 import { getproductsurl, getproducturl } from "config";
 import Link from "next/link";
 
-export default function Page() {
+export default function MyProducts() {
 
   const [products, setProducts] = useState<any>();
   const [messageApi, contextHolder] = message.useMessage();
@@ -47,7 +47,7 @@ export default function Page() {
       <NavBar />
       <main>
         <div className="banner">
-          <Image src={banner2} alt="banner" />
+          <Empty />
         </div>
         <div className="main-content">
 
@@ -58,7 +58,7 @@ export default function Page() {
                 ? (products.length > 0)
                   ? products.map(product => {
                     return (
-                      <Link href={`./product/${product._id}`} className="product">
+                      <Link href={`./updateproduct/${product._id}`} className="product">
                         <div className="img-wrapper"><img src={product.img1} alt="product image" /></div>
                         <Paragraph strong
                           ellipsis={{

@@ -1,7 +1,7 @@
 'use client'
 
 import styled from 'styled-components'
-import { Carousel, Typography, Image as Img, Space, message, Button } from "antd";
+import { Carousel, Typography, Image as Img, Space, message, Button, Skeleton, Empty } from "antd";
 const { Title, Text, Paragraph } = Typography;
 import { StarFilled, StarTwoTone } from "@ant-design/icons";
 import NavBar from 'ui/NavBar'
@@ -10,6 +10,7 @@ import Fetch from 'fetch';
 import { buyfromcartturl, getbuyerorderurl, getcarturl, getproductsurl, getproducturl, getsellerorderurl } from 'config';
 import Link from "next/link";
 import { BuyFromCartParams } from 'types';
+import { useRouter } from 'next/navigation';
 
 
 export default function Cart() {
@@ -19,6 +20,7 @@ export default function Cart() {
   const [messageApi, contextHolder] = message.useMessage();
   const [pidarr, setpidarr] = useState([]);
   const [sellerarr, setsellerarr] = useState([]);
+  const router = useRouter();
 
   const error = (content: string) => {
     messageApi.open({
@@ -89,7 +91,8 @@ export default function Cart() {
     const res = await api.postAuthjson();
     console.log(res);
     if (res.status){
-      success("Purchase Sucess")
+      success("Purchase Sucess");
+      router.push('../');
     }
   }
 
@@ -117,12 +120,18 @@ export default function Cart() {
                     </Link>
                   )
                 })
-                : "no products"
-              : "loding..."
+                : <Empty />
+              : <Skeleton active />
           }
 
         </div>
-        <Button type='primary' size='large' onClick={buyall}>Proceed To Buy</Button>
+        {
+            products
+              ? (products.length > 0)
+                ? <Button type='primary' size='large' onClick={buyall}>Proceed To Buy</Button>
+                : null
+              : <Skeleton active />
+          }
       </main>
     </StyledDiv>
   )

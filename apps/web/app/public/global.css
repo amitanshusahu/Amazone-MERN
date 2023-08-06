@@ -2,3 +2,13 @@
   margin: 0;
   padding: 0;
 }
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pop {
+  from {scale : 0;}
+  to { scale: 1;}
+}
