@@ -1,9 +1,18 @@
+export declare const BASE_URI = "http://localhost:9000/api";
 export declare const signupurl: string;
 export declare const loginurl: string;
 export declare const meurl: string;
 export declare const createproducturl: string;
 export declare const getproductsurl: string;
 export declare const getproducturl: string;
+export declare const buyproducturl: string;
+export declare const getsellerorderurl: string;
+export declare const getbuyerorderurl: string;
+export declare const addtocarturl: string;
+export declare const getcarturl: string;
+export declare const buyfromcartturl: string;
+export declare const issellerurl: string;
+export declare const updateproducturl: string;
 export declare let TOKEN: string;
 export declare let USERNAME: string;
 export declare function loadSecrets(): null | undefined;

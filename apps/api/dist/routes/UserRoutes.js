@@ -10,4 +10,5 @@ const middleware_1 = require("../lib/middleware");
 router.post('/login', UserController_1.login);
 router.post('/signup', UserController_1.signup);
 router.get('/me', middleware_1.protect, UserController_1.me);
+router.get('/isseller', middleware_1.protect, UserController_1.isseller);
 exports.default = router;

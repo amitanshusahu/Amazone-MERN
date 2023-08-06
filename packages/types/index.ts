@@ -30,6 +30,23 @@ export const createProductInput = z.object({
 
 export type CreateProductParams = z.infer<typeof createProductInput>;
 
+export const updateProductInput = z.object({
+  pid: z.string(),
+  username: z.string(),
+  title: z.string(),
+  description: z.string(),
+  price: z.number(),
+  options: z.array(z.string()),
+  info: z.string(),
+  img1: z.string(),
+  img2: z.string(),
+  img3: z.string(),
+  img4: z.string()
+})
+
+export type UpdateProductParams = z.infer<typeof updateProductInput>;
+
+
 export const OrderInput = z.object({
   seller: z.string(),
   pid: z.string(),

@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { signupInput, loginInput } from 'types';
 import jwt from 'jsonwebtoken';
+import { isSeller } from "../lib/utils";
 
 
 // @desc save use to the database if not already present
@@ -62,10 +63,20 @@ export async function login(req: Request, res: Response): Promise<Response> {
 export async function me(req: Request, res: Response): Promise<Response> {
   try {
     const username = req.headers.user;
-    return res.status(200).json({ status: true, username});
+    return res.status(200).json({ status: true, username });
   }
   catch (ex) {
     console.log(ex);
     return res.status(500).json({ status: false, msg: 'Internal Server Error!!' });
   }
+}
+
+export async function isseller(req: Request, res: Response): Promise<Response> {
+  if (typeof req.headers.user == 'string') {
+    const isselleracc = await isSeller(req.headers.user);
+    if (isselleracc ) return res.status(200).json({status: true});
+    else return res.status(403).json({status: false});
+  }
+
+  else return res.status(500).json({status: false, msg: `error ${req.headers.user} is not a string`})
 }

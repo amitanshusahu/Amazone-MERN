@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buyfromcart = exports.getCart = exports.addToCart = exports.getSellerOrders = exports.getBuyerOrders = exports.buyProduct = exports.getProduct = exports.getProducts = exports.createProduct = void 0;
+exports.updateProduct = exports.buyfromcart = exports.getCart = exports.addToCart = exports.getSellerOrders = exports.getBuyerOrders = exports.buyProduct = exports.getProduct = exports.getProducts = exports.createProduct = void 0;
 const utils_1 = require("../lib/utils");
 const OrderModel_1 = __importDefault(require("../models/OrderModel"));
 const ProductModel_1 = __importDefault(require("../models/ProductModel"));
@@ -61,8 +61,20 @@ exports.createProduct = createProduct;
 function getProducts(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const products = yield ProductModel_1.default.find();
-            return res.status(200).json({ stauts: true, products });
+            // Check if the usename is a seller
+            if (typeof req.headers.user == 'string') {
+                const isseller = yield (0, utils_1.isSeller)(req.headers.user);
+                if (isseller) {
+                    const products = yield ProductModel_1.default.find({ username: req.headers.user });
+                    console.log(products);
+                    return res.status(200).json({ stauts: true, products });
+                }
+                else {
+                    const products = yield ProductModel_1.default.find();
+                    return res.status(200).json({ stauts: true, products });
+                }
+            }
+            return res.status(500).json({ stauts: true, msg: 'something went wrong' });
         }
         catch (ex) {
             console.log(ex);
@@ -106,6 +118,9 @@ function buyProduct(req, res) {
                         yield OrderModel_1.default.create({ buyer: req.headers.user, seller, pid });
                         return res.status(200).json({ status: true });
                     }
+                }
+                else {
+                    return res.status(200).json({ status: false, msg: 'You are not a buyer' });
                 }
             }
             return res.status(200).json({ status: false, msg: 'Something went wrong' });
@@ -235,7 +250,6 @@ function buyfromcart(req, res) {
                 const isseller = yield (0, utils_1.isSeller)(req.headers.user);
                 if (!isseller) {
                     for (let i = 0; i < pid.length; i++) {
-                        console.log(pid[i], [seller[i]]);
                         yield OrderModel_1.default.create({ pid: pid[i], seller: seller[i], buyer: req.headers.user });
                     }
                     return res.status(200).json({ status: true });
@@ -253,3 +267,42 @@ function buyfromcart(req, res) {
     });
 }
 exports.buyfromcart = buyfromcart;
+function updateProduct(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            // input validation
+            const parsedInput = types_1.updateProductInput.safeParse(req.body);
+            if (!parsedInput.success) {
+                return res.status(401).json({
+                    status: false,
+                    msg: 'Invalid Input'
+                });
+            }
+            // Check if its a seller
+            const { pid, username, title, description, price, options, info, img1, img2, img3, img4 } = req.body;
+            const user = yield UserModel_1.default.findOne({ username });
+            if ((user === null || user === void 0 ? void 0 : user.type) != 'seller') {
+                return res.status(403).json({ status: false, msg: 'Not A Seller' });
+            }
+            // Save product to db
+            yield ProductModel_1.default.findByIdAndUpdate(pid, {
+                username,
+                title,
+                description,
+                price,
+                options,
+                info,
+                img1,
+                img2,
+                img3,
+                img4
+            });
+            return res.status(200).json({ status: true });
+        }
+        catch (ex) {
+            console.log(ex);
+            return res.status(500).json({ status: false, msg: 'Internal Server Error' });
+        }
+    });
+}
+exports.updateProduct = updateProduct;

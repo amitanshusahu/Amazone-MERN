@@ -4,7 +4,7 @@ import productModel from "../models/ProductModel";
 import cartModel from '../models/CartModel';
 import userModel from "../models/UserModel";
 import { Request, Response } from "express";
-import { createProductInput, OrderInput, addToCartInput, buyFromCart } from 'types';
+import { createProductInput, OrderInput, addToCartInput, buyFromCart, updateProductInput } from 'types';
 
 export async function createProduct(req: Request, res: Response): Promise<Response> {
 
@@ -50,8 +50,20 @@ export async function createProduct(req: Request, res: Response): Promise<Respon
 
 export async function getProducts(req: Request, res: Response): Promise<Response> {
   try {
-    const products = await productModel.find();
-    return res.status(200).json({ stauts: true, products });
+    // Check if the usename is a seller
+    if (typeof req.headers.user == 'string') {
+      const isseller = await isSeller(req.headers.user);
+      if (isseller) {
+        const products = await productModel.find({username: req.headers.user});
+        console.log(products);
+        return res.status(200).json({ stauts: true, products });
+      } else {
+        const products = await productModel.find();
+        return res.status(200).json({ stauts: true, products });
+      }
+    }
+
+    return res.status(500).json({ stauts: true, msg: 'something went wrong' });
   }
   catch (ex) {
     console.log(ex);
@@ -93,6 +105,8 @@ export async function buyProduct(req: Request, res: Response): Promise<Response>
           await orderModel.create({ buyer: req.headers.user, seller, pid });
           return res.status(200).json({ status: true });
         }
+      } else {
+        return res.status(200).json({ status: false, msg: 'You are not a buyer' });
       }
     }
 
@@ -220,7 +234,7 @@ export async function buyfromcart(req: Request, res: Response): Promise<Response
         for (let i = 0; i < pid.length; i++) {
           await orderModel.create({ pid: pid[i], seller: seller[i], buyer: req.headers.user });
         }
-        return res.status(200).json({ status: true});
+        return res.status(200).json({ status: true });
       } else {
         return res.status(403).json({ status: false, msg: "This is'nt a buyer account" });
       }
@@ -233,4 +247,46 @@ export async function buyfromcart(req: Request, res: Response): Promise<Response
     console.log(ex);
     return res.status(500).json({ status: false, msg: 'Internal Server Error' });
   }
+}
+
+export async function updateProduct(req: Request, res: Response): Promise<Response> {
+
+  try {
+    // input validation
+    const parsedInput = updateProductInput.safeParse(req.body);
+    if (!parsedInput.success) {
+      return res.status(401).json({
+        status: false,
+        msg: 'Invalid Input'
+      })
+    }
+
+    // Check if its a seller
+    const { pid, username, title, description, price, options, info, img1, img2, img3, img4 } = req.body;
+    const user = await userModel.findOne({ username });
+    if (user?.type != 'seller') {
+      return res.status(403).json({ status: false, msg: 'Not A Seller' });
+    }
+
+    // Save product to db
+    await productModel.findByIdAndUpdate(pid, {
+      username,
+      title,
+      description,
+      price,
+      options,
+      info,
+      img1,
+      img2,
+      img3,
+      img4
+    });
+
+    return res.status(200).json({ status: true });
+  }
+  catch (ex) {
+    console.log(ex)
+    return res.status(500).json({ status: false, msg: 'Internal Server Error' });
+  }
+
 }

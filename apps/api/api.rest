@@ -98,3 +98,8 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXRoYnV5
   "pid" : ["lkdf", "dsfdf"],
   "seller": ["somerandome", "someone"]
 }
+
+### is seller
+
+GET http://localhost:9000/api/auth/isseller
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXRoYnV5IiwiaWF0IjoxNjkxMjQ5NjA0fQ.UafsCe8oK3xUKEZTp3Jk1vb30EBaXlnb5wsxYNwZLT4

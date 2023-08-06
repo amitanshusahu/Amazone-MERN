@@ -7,7 +7,9 @@ import { StarTwoTone, StarFilled, RightOutlined, ThunderboltFilled, ShoppingCart
 import Paragraph from 'antd/es/typography/Paragraph';
 import { useEffect, useState } from 'react';
 import Fetch from 'fetch';
-import { getproducturl, meurl } from 'config';
+import { addtocarturl, getproducturl, meurl } from 'config';
+import { AddToCartParams, OrderParams } from 'types'
+import { useRouter } from 'next/navigation';
 
 const imgFallback: string = 'https://i.pinimg.com/1200x/7a/4b/a3/7a4ba30875e0de9567889866eb66bc4c.jpg';
 
@@ -16,10 +18,18 @@ export default function Product({ params }) {
   const [product, setProduct] = useState<any>();
   const [messageApi, contextHolder] = message.useMessage();
   const [username, setUsername] = useState();
+  const router = useRouter();
 
   const error = (content: string) => {
     messageApi.open({
       type: 'error',
+      content: content,
+    });
+  };
+
+  const success = (content: string) => {
+    messageApi.open({
+      type: 'success',
       content: content,
     });
   };
@@ -40,8 +50,8 @@ export default function Product({ params }) {
     async function getUsername() {
       const api = new Fetch({}, meurl);
       const res = await api.get();
-      if('status' in res){
-        if (res.status){
+      if ('status' in res) {
+        if (res.status) {
           setUsername(res.username);
         }
         else error(res.msg);
@@ -51,8 +61,34 @@ export default function Product({ params }) {
     // getUsername();
   }, [])
 
+  const buyProduct = () => {
+    router.push(`../buy/${params.id}`)
+  }
+
+  const addToCart = async () => {
+    console.log('working')
+    const payload: AddToCartParams = {
+      pid: params.id
+    }
+
+    const api = new Fetch(payload, addtocarturl);
+    const res = await api.postAuthjson();
+    if ('status' in res) {
+      if (res.status) {
+        console.log(res);
+        success("Added to cart");
+      }
+      else {
+        if ('msg' in res && typeof res.msg == 'string') error(res.msg);
+        else error('something is wrong');
+      }
+    }
+    else error('something is wrong');
+  }
+
   return (
     <StyledDiv>
+      {contextHolder}
       <div className="product-wrapper">
 
         <div className="product-img-wrapper">
@@ -101,23 +137,23 @@ export default function Product({ params }) {
           </div>
 
           <div className="action-btns">
-            <Button type='primary' size='large' style={{ width: '100%' }}> <ThunderboltFilled /> Buy Now </Button>
-            <Button size='large' style={{ width: '100%' }}> <ShoppingCartOutlined /> Add to Cart </Button>
+            <Button type='primary' size='large' style={{ width: '100%' }} onClick={buyProduct}> <ThunderboltFilled /> Buy Now </Button>
+            <Button size='large' style={{ width: '100%' }} onClick={addToCart}  > <ShoppingCartOutlined /> Add to Cart </Button>
           </div>
 
           <div className="offers" style={{ marginTop: '20px' }}>
             <Title level={4}>Delivery Option</Title>
             <p><Text strong> <StarFilled style={{ color: '#aaa' }} /> 100%</Text> <Text>Original Product</Text></p>
-            
+
             <p><Text strong> <HomeFilled style={{ color: '#aaa' }} /> webship prime</Text> <Text> product</Text></p>
             {
               product
-              ? product.options.map( option => {
-                return (
-                  <p><Text strong> <MoneyCollectOutlined style={{ color: '#aaa' }} /> {option}</Text></p>
-                )
-              })
-              : ""
+                ? product.options.map(option => {
+                  return (
+                    <p><Text strong> <MoneyCollectOutlined style={{ color: '#aaa' }} /> {option}</Text></p>
+                  )
+                })
+                : ""
             }
           </div>
 
