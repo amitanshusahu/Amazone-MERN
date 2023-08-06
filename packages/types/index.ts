@@ -29,3 +29,23 @@ export const createProductInput = z.object({
 })
 
 export type CreateProductParams = z.infer<typeof createProductInput>;
+
+export const OrderInput = z.object({
+  seller: z.string(),
+  pid: z.string(),
+});
+
+export type OrderParams = z.infer<typeof OrderInput>;
+
+export const addToCartInput = z.object({
+  pid: z.string(),
+});
+
+export type AddToCartParams = z.infer<typeof addToCartInput>;
+
+export const buyFromCart = z.object({
+  pid: z.array(z.string()),
+  seller: z.array(z.string()),
+})
+
+export type BuyFromCartParams = z.infer<typeof buyFromCart>;

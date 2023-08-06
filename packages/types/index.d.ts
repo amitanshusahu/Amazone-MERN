@@ -59,3 +59,33 @@ export declare const createProductInput: z.ZodObject<{
     img4: string;
 }>;
 export type CreateProductParams = z.infer<typeof createProductInput>;
+export declare const OrderInput: z.ZodObject<{
+    seller: z.ZodString;
+    pid: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    seller: string;
+    pid: string;
+}, {
+    seller: string;
+    pid: string;
+}>;
+export type OrderParams = z.infer<typeof OrderInput>;
+export declare const addToCartInput: z.ZodObject<{
+    pid: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    pid: string;
+}, {
+    pid: string;
+}>;
+export type AddToCartParams = z.infer<typeof addToCartInput>;
+export declare const buyFromCart: z.ZodObject<{
+    pid: z.ZodArray<z.ZodString, "many">;
+    seller: z.ZodArray<z.ZodString, "many">;
+}, "strip", z.ZodTypeAny, {
+    seller: string[];
+    pid: string[];
+}, {
+    seller: string[];
+    pid: string[];
+}>;
+export type BuyFromCartParams = z.infer<typeof buyFromCart>;
