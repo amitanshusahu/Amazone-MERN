@@ -20,7 +20,7 @@
 ## 📌 Set up project
 - clone the repo and go into it
 ```bash
-git clone https://github.com/amitanshusahu/YouTube-fullstack & cd YouTube-fullstack
+git clone https://github.com/amitanshusahu/Amazone-MERN & cd Amazone-MERN
 ```
 - in the root folder
 ```bash
